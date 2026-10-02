@@ -49,7 +49,8 @@ for w in ["colour", "neighbour", "behaviour", "favour", "honour", "labour", "fla
     for end in ["", "s", "ed", "ing", "ful", "less", "able", "ite", "ites"]:
         _add(w + end, w.replace("our", "or") + end)
 _add("favourite", "favorite"), _add("favourites", "favorites"), _add("colourise", "colorize", "ise")
-for w in ["centre", "metre", "litre", "fibre", "theatre", "calibre", "sombre", "spectre", "lustre"]:
+for w in ["centre", "metre", "litre", "fibre", "theatre", "calibre", "sombre", "spectre", "lustre", "millimetre",
+          "centimetre", "kilometre", "micrometre", "nanometre", "millilitre", "centilitre", "decilitre"]:
     stem = w[:-2]
     _add(w, stem + "er"), _add(w + "s", stem + "ers"), _add(w + "d", stem + "ered")
 for stem in ["organis", "recognis", "realis", "normalis", "minimis", "maximis", "optimis", "visualis", "prioritis",
@@ -89,8 +90,10 @@ ALSO_BRITISH = {"program", "programs", "meter", "meters", "check", "checks", "li
 # British spellings that are also standard American: American mode never flags them.
 ALSO_AMERICAN = {"dialogue", "analogue"}
 
-# Platform APIs spelled British by definition: Web Audio, Python asyncio/concurrent.futures.
-WEB_APIS = ["AnalyserNode", "createAnalyser", "CancelledError"]
+# Platform APIs spelled British by definition: Web Audio, Python asyncio, Swift concurrency, Foundation.
+WEB_APIS = ["AnalyserNode", "createAnalyser", "CancelledError", "isCancelled", "NSURLErrorCancelled"]
+# GitHub Actions spells its own job/run result "cancelled" (and the cancelled() function).
+WORKFLOW_DIR, WORKFLOW_WORDS = ".github/workflows/", {"cancelled"}
 LINE_MARKER, FILE_MARKER = "spelling: ok", "spelling: skip-file"
 WORD = re.compile(r"[A-Z]+(?![a-z])|[A-Z]?[a-z]+")  # splits identifiers: colour_edges, scanCancelled, AudioAnalyser
 DOCS = {".md", ".markdown", ".txt", ".rst", ".adoc", ".mdx"}
@@ -179,7 +182,8 @@ def check_repo(root, dialect: str | None = None, scope: str | None = None, files
             continue
         if FILE_MARKER in "\n".join(text.splitlines()[:5]):
             continue
-        problems += [f"{name}:{n}: {word} -> {fix}" for n, word, fix in check_text(text, dialect, config["words"])]
+        allowed = config["words"] | (WORKFLOW_WORDS if name.startswith(WORKFLOW_DIR) else set())
+        problems += [f"{name}:{n}: {word} -> {fix}" for n, word, fix in check_text(text, dialect, allowed)]
     return problems
 
 
