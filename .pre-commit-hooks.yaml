@@ -1,0 +1,6 @@
+- id: spelling-dialect
+  name: Spelling dialect
+  description: Keep one English spelling, American or British (set it in .spelling-dialect).
+  entry: spelling-dialect
+  language: python
+  types: [text]
