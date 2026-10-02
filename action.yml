@@ -1,5 +1,5 @@
 name: Spelling dialect
-description: Keep a repo in one English spelling, American or British (color vs colour), including inside identifiers.
+description: Keep a repo in one English spelling, American or British (color vs colour), including inside identifiers.  # spelling: ok
 author: Eric Dahl
 branding:
   icon: check-square

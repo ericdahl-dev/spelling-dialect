@@ -42,6 +42,10 @@ class American(unittest.TestCase):
     def test_platform_api_names_spelled_british_are_allowed(self):
         self.assertEqual(words("new AnalyserNode(); ctx.createAnalyser()"), [])
         self.assertEqual(words("except asyncio.CancelledError: pass"), [])
+        self.assertEqual(words("if Task.isCancelled { return }; case NSURLErrorCancelled:"), [])
+
+    def test_metric_compounds(self):
+        self.assertEqual(words("millimetres centimetre kilometres"), [("millimetres", "millimeters"), ("centimetre", "centimeter"), ("kilometres", "kilometers")])
 
 
 class British(unittest.TestCase):
@@ -92,6 +96,13 @@ class Repo(unittest.TestCase):
     def test_dialect_argument_overrides_config(self):
         root = repo({".spelling-dialect": "dialect: british\n", "a.md": "colour\n"})
         self.assertEqual(check_repo(root, dialect="american"), ["a.md:1: colour -> color"])
+
+    def test_github_actions_own_cancelled_value_is_allowed_in_workflows(self):
+        root = repo({
+            ".github/workflows/ci.yml": "if: ${{ cancelled() || needs.a.result == 'cancelled' }}\n",
+            "docs/notes.md": "The run was cancelled.\n",
+        })
+        self.assertEqual(check_repo(root), ["docs/notes.md:1: cancelled -> canceled"])
 
     def test_file_opt_out(self):
         root = repo({"words.py": "# spelling: skip-file\ncolour\n", "app.py": "colour\n"})

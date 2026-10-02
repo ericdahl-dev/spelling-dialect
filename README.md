@@ -76,7 +76,7 @@ Why British mode checks only docs by default: code is full of American spellings
 - A line: add `spelling: ok` anywhere on it, e.g. `status == "cancelled"  # spelling: ok (GitHub's value)`.
 - A file: put `spelling: skip-file` in its first five lines.
 
-Platform APIs that are British by definition are always allowed: Web Audio's `AnalyserNode` and `createAnalyser`, and Python's `CancelledError`.
+Platform names that are British by definition are always allowed: Web Audio's `AnalyserNode` and `createAnalyser`, Python's `CancelledError`, Swift's `isCancelled`, Foundation's `NSURLErrorCancelled`, and GitHub Actions' own `cancelled` result value (in `.github/workflows/`).
 
 ## What it knows
 
