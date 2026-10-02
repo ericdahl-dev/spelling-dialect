@@ -1,0 +1,33 @@
+name: Spelling dialect
+description: Keep a repo in one English spelling, American or British (color vs colour), including inside identifiers.
+author: Eric Dahl
+branding:
+  icon: check-square
+  color: blue
+inputs:
+  dialect:
+    description: "american, british or british-oxford. Default: the repo's .spelling-dialect file, else american."
+    required: false
+    default: ""
+  scope:
+    description: "all (every tracked text file) or docs (Markdown and text only). Default: all for american, docs for british."
+    required: false
+    default: ""
+  path:
+    description: The repo directory to check.
+    required: false
+    default: "."
+runs:
+  using: composite
+  steps:
+    - name: Check spelling
+      shell: bash
+      env:
+        DIALECT: ${{ inputs.dialect }}
+        SCOPE: ${{ inputs.scope }}
+        TARGET: ${{ inputs.path }}
+      run: |
+        args=()
+        [ -n "$DIALECT" ] && args+=(--dialect "$DIALECT")
+        [ -n "$SCOPE" ] && args+=(--scope "$SCOPE")
+        python3 "${{ github.action_path }}/spelling_dialect.py" "${args[@]}" "$TARGET"
